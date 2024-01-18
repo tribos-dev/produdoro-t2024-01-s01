@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.wakandaacademy.produdoro.config.security.service.TokenService;
@@ -44,9 +46,11 @@ public class TarefaRestController implements TarefaAPI {
 	}
 
 	@Override
-	public List<TarefaListResponse> getTodasTarefas() {
+	public List<TarefaListResponse> getTodasTarefas(@RequestHeader(name = "Authorization",required = true) String token, 
+    		@PathVariable UUID idUsuario) {
 		log.info("[incia] TarefaInfraRepository getTodasTarefas");
-		List<TarefaListResponse> tarefas = tarefaService.buscaTodosClientes();
+		log.info("[idUsuario] {}", idUsuario);
+		List<TarefaListResponse> tarefas = tarefaService.buscaTodasTarefas(idUsuario);
 		log.info("[finaliza] TarefaInfraRepository getTodasTarefas");
 		return tarefas;
 	}

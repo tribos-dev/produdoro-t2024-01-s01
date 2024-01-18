@@ -31,6 +31,4 @@ public interface TarefaAPI {
 	@ResponseStatus(code = HttpStatus.OK)
     List<TarefaListResponse> getTodasTarefas(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idUsuario);
-    
-
-}
+    }

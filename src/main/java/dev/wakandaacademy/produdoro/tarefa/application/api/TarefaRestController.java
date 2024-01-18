@@ -50,9 +50,9 @@ public class TarefaRestController implements TarefaAPI {
     		@PathVariable UUID idUsuario) {
 		log.info("[incia] TarefaInfraRepository getTodasTarefas");
 		log.info("[idUsuario] {}", idUsuario);
-		List<TarefaListResponse> tarefas = tarefaService.buscaTodasTarefas(idUsuario);
+		String usuario = getUsuarioByToken(token);
+		List<TarefaListResponse> tarefas = tarefaService.buscaTodasTarefas(usuario, idUsuario);
 		log.info("[finaliza] TarefaInfraRepository getTodasTarefas");
 		return tarefas;
 	}
-
 }

@@ -52,5 +52,4 @@ public class UsuarioApplicationService implements UsuarioService {
 		usuarioRepository.salva(usuarioPorEmail);
 		log.info("[finaliza] UsuarioApplicationService - alteraStatusParaFoco");
 	}
-
 }

@@ -1,16 +1,17 @@
 package dev.wakandaacademy.produdoro.tarefa.infra;
 
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
+
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 @Log4j2
@@ -38,7 +39,10 @@ public class TarefaInfraRepository implements TarefaRepository {
         return tarefaPorId;
     }
 	@Override
-	public void deletaTarefaPorId(Tarefa detalhaTarefa) {
+	public void deletaTarefaPorId(Tarefa tarefa) {
+		log.info("[inicia] TarefaInfraRepository - deletaTarefaPorId");
+		tarefaSpringMongoDBRepository.delete(tarefa);
+		log.info("[finaliza] TarefaInfraRepository - deletaTarefaPorId");
 		
 	}
 }

@@ -55,5 +55,6 @@ public class Usuario {
 	}
 
 	public void mudaStatusPausaCurta() {
+		this.status = StatusUsuario.PAUSA_CURTA;
 	}
 }

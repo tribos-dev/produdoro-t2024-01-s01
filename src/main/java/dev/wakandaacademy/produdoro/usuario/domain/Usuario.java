@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import javax.validation.constraints.Email;
 
+import dev.wakandaacademy.produdoro.handler.APIException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.http.HttpStatus;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -23,6 +26,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @Document(collection = "Usuario")
+@Log4j2
 public class Usuario {
 	@Id
 	private UUID idUsuario;
@@ -43,7 +47,11 @@ public class Usuario {
 	}
 
 	public void vailidaUsuario(UUID idUsuario) {
-
+		log.info("[inicia] Usuario - validaUsuario");
+		if (!this.idUsuario.equals(idUsuario)) {
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticacao não e Valida");
+		}
+		log.info("[finaliza] Usuario - validaUsuario");
 	}
 
 	public void mudaStatusPausaCurta() {

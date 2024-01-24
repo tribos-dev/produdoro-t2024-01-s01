@@ -39,7 +39,7 @@ public class TarefaRestController implements TarefaAPI {
 	public void concluiTarefa(String token, UUID idTarefa) {
 		log.info("[inicia] TarefaRestController - concluiTarefa");
 		String usuario = getUsuarioByToken(token);
-		Tarefa tarefa = tarefaService.concluiTarefa(usuario, idTarefa);
+		tarefaService.concluiTarefa(usuario, idTarefa);
 		log.info("[finaliza] TarefaRestController - concluiTarefa");
 	}
 

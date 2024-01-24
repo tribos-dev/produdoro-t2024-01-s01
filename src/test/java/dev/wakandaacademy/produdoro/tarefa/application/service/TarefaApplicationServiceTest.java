@@ -2,13 +2,13 @@ package dev.wakandaacademy.produdoro.tarefa.application.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
 import dev.wakandaacademy.produdoro.DataHelper;
+import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
@@ -73,5 +75,18 @@ class TarefaApplicationServiceTest {
     	 verify(tarefaRepository, times(1)).buscaTodasTarefas(usuario.getIdUsuario());
     	 
     	 assertEquals(resultado.size(), 8);
+    }
+    
+    @Test
+    public void testNaoDeveBuscaTodasTarefasPorUsuario() {
+    	Usuario usuario = DataHelper.createUsuario();
+    	
+    	when(usuarioRepository.buscaUsuarioPorEmail(any())).thenThrow(APIException.build(HttpStatus.BAD_REQUEST, "Usuario não encontrado!"));
+    	
+    	APIException e = assertThrows(APIException.class,
+                () -> tarefaApplicationService.buscaTodasTarefas("emailinvalido@gmail.com", usuario.getIdUsuario()));
+    	
+    	assertEquals(HttpStatus.BAD_REQUEST, e.getStatusException());
+    	assertEquals("Usuario não encontrado!", e.getMessage());
     }
 }

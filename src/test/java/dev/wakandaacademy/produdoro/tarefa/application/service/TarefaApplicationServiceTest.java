@@ -65,14 +65,14 @@ class TarefaApplicationServiceTest {
     	 
     	 when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
     	 when(usuarioRepository.buscaUsuarioPorId(any())).thenReturn(usuario);
-    	 when(tarefaRepository.buscaTodasTarefas(any())).thenReturn(tarefas);
+    	 when(tarefaRepository.buscaTarefasPorUsuario(any())).thenReturn(tarefas);
     	 
     	 
-    	 List<TarefaListResponse> resultado = tarefaApplicationService.buscaTodasTarefas(usuario.getEmail(), usuario.getIdUsuario());
+    	 List<TarefaListResponse> resultado = tarefaApplicationService.buscaTarefasPorUsuario(usuario.getEmail(), usuario.getIdUsuario());
     	 
     	 verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
     	 verify(usuarioRepository, times(1)).buscaUsuarioPorId(usuario.getIdUsuario());
-    	 verify(tarefaRepository, times(1)).buscaTodasTarefas(usuario.getIdUsuario());
+    	 verify(tarefaRepository, times(1)).buscaTarefasPorUsuario(usuario.getIdUsuario());
     	 
     	 assertEquals(resultado.size(), 8);
     }
@@ -84,7 +84,7 @@ class TarefaApplicationServiceTest {
     	when(usuarioRepository.buscaUsuarioPorEmail(any())).thenThrow(APIException.build(HttpStatus.BAD_REQUEST, "Usuario não encontrado!"));
     	
     	APIException e = assertThrows(APIException.class,
-                () -> tarefaApplicationService.buscaTodasTarefas("emailinvalido@gmail.com", usuario.getIdUsuario()));
+                () -> tarefaApplicationService.buscaTarefasPorUsuario("emailinvalido@gmail.com", usuario.getIdUsuario()));
     	
     	assertEquals(HttpStatus.BAD_REQUEST, e.getStatusException());
     	assertEquals("Usuario não encontrado!", e.getMessage());

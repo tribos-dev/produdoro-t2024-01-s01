@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -46,4 +47,23 @@ public class TarefaApplicationService implements TarefaService {
 		tarefaRepository.deletaTarefaPorId(detalhaTarefa(usuario, idTarefa));
 		log.info("[finaliza] TarefaApplicationService - deletaTarefa");
 	}
+
+    @Override
+    public void definirTarefaComoAtiva(String usuario, UUID idTarefa) {
+        log.info("[inicia] TarefaApplicationService - definirTarefaComoAtiva");
+        Usuario usuarioPorEmail = usuarioRepository.buscaUsuarioPorEmail(usuario);
+        log.info("[usuarioPorEmail] {}", usuarioPorEmail);
+        Tarefa tarefa = validaTarefa(idTarefa, usuarioPorEmail);
+        tarefa.inativarOutraTarefa(tarefaRepository);
+        tarefa.definirComoAtiva();
+        tarefaRepository.salva(tarefa);
+        log.info("[finaliza] TarefaApplicationService - definirTarefaComoAtiva");
+    }
+
+    private Tarefa validaTarefa(UUID idTarefa, Usuario usuario) {
+        Tarefa tarefa = tarefaRepository.buscaTarefaPorId(idTarefa)
+                .orElseThrow(() -> APIException.build(HttpStatus.BAD_REQUEST, "Id da tarefa invalido"));
+        tarefa.pertenceAoUsuario(usuario);
+        return tarefa;
+    }
 }

@@ -9,9 +9,18 @@ import org.springframework.stereotype.Repository;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
+import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @Log4j2
@@ -38,6 +47,7 @@ public class TarefaInfraRepository implements TarefaRepository {
         log.info("[finaliza] TarefaInfraRepository - buscaTarefaPorId");
         return tarefaPorId;
     }
+
 	@Override
 	public void deletaTarefaPorId(Tarefa tarefa) {
 		log.info("[inicia] TarefaInfraRepository - deletaTarefaPorId");
@@ -45,4 +55,12 @@ public class TarefaInfraRepository implements TarefaRepository {
 		log.info("[finaliza] TarefaInfraRepository - deletaTarefaPorId");
 		
 	}
+
+    @Override
+    public Tarefa buscarTarefaAtiva() {
+        log.info("[inicia] TarefaInfraRepository - buscarTarefaAtiva");
+        Tarefa tarefa = tarefaSpringMongoDBRepository.findByStatusAtivacao(StatusAtivacaoTarefa.ATIVA);
+        log.info("[finaliza] TarefaInfraRepository - buscarTarefaAtiva");
+        return tarefa;
+    }
 }

@@ -4,6 +4,12 @@ import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 
+import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
+import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
+import lombok.*;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,6 +23,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
+import java.util.UUID;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -52,6 +61,21 @@ public class Tarefa {
 	public void pertenceAoUsuario(Usuario usuarioPorEmail) {
 		if(!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário não é dono da Tarefa solicitada!");
+		}
+	}
+	public void definirComoAtiva() {
+		if (this.statusAtivacao.equals(StatusAtivacaoTarefa.INATIVA)){
+			this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+		}
+	}
+	public void inativarOutraTarefa(TarefaRepository tarefaRepository) {
+		Tarefa tarefaAtiva = tarefaRepository.buscarTarefaAtiva();
+		tarefaAtiva.definirComoInativa();
+		tarefaRepository.salva(tarefaAtiva);
+	}
+	private void definirComoInativa() {
+		if (this.statusAtivacao.equals(StatusAtivacaoTarefa.ATIVA)){
+			this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
 		}
 	}
 }

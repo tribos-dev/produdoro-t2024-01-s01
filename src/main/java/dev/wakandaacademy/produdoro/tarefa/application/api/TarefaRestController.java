@@ -1,16 +1,15 @@
 package dev.wakandaacademy.produdoro.tarefa.application.api;
 
-import java.util.UUID;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RestController;
-
 import dev.wakandaacademy.produdoro.config.security.service.TokenService;
 import dev.wakandaacademy.produdoro.handler.APIException;
 import dev.wakandaacademy.produdoro.tarefa.application.service.TarefaService;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @Log4j2
@@ -35,6 +34,14 @@ public class TarefaRestController implements TarefaAPI {
 		return new TarefaDetalhadoResponse(tarefa);
 	}
 
+	@Override
+	public void definirTarefaComoAtiva(String token, UUID idTarefa) {
+		log.info("[inicia] TarefaRestController - definirTarefaComoAtiva");
+		String usuario = getUsuarioByToken(token);
+		tarefaService.definirTarefaComoAtiva(usuario, idTarefa);
+		log.info("[finaliza] TarefaRestController - definirTarefaComoAtiva");
+	}
+
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
@@ -52,3 +59,4 @@ public class TarefaRestController implements TarefaAPI {
 	}
 
 }
+

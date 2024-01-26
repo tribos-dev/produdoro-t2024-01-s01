@@ -46,8 +46,7 @@ public class TarefaRestController implements TarefaAPI {
 	}
 
 	@Override
-	public List<TarefaListResponse> buscaTarefasPorUsuario(@RequestHeader(name = "Authorization",required = true) String token, 
-    		@PathVariable UUID idUsuario) {
+	public List<TarefaListResponse> buscaTarefasPorUsuario(String token, UUID idUsuario) {
 		log.info("[incia] TarefaInfraRepository getTodasTarefas");
 		log.info("[idUsuario] {}", idUsuario);
 		String usuario = getUsuarioByToken(token);

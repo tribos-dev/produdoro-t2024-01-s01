@@ -29,6 +29,6 @@ public interface TarefaAPI {
 
     @DeleteMapping("/deleta-tarefa/{idTarefa}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    void DeletaTarefa(@RequestHeader(name = "Authorization",required = true) String token, 
+    void deletaTarefa(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idTarefa);
 }

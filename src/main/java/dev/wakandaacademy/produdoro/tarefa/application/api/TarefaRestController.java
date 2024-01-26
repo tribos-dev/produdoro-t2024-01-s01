@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.wakandaacademy.produdoro.config.security.service.TokenService;
@@ -38,6 +36,14 @@ public class TarefaRestController implements TarefaAPI {
 		return new TarefaDetalhadoResponse(tarefa);
 	}
 
+	@Override
+	public void definirTarefaComoAtiva(String token, UUID idTarefa) {
+		log.info("[inicia] TarefaRestController - definirTarefaComoAtiva");
+		String usuario = getUsuarioByToken(token);
+		tarefaService.definirTarefaComoAtiva(usuario, idTarefa);
+		log.info("[finaliza] TarefaRestController - definirTarefaComoAtiva");
+	}
+
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
 		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
@@ -54,4 +60,13 @@ public class TarefaRestController implements TarefaAPI {
 		log.info("[finaliza] TarefaInfraRepository getTodasTarefas");
 		return tarefas;
 	}
+	public void deletaTarefa(String token, UUID idTarefa) {
+		log.info("[inicia] TarefaRestController - DeletaTarefa");
+		String usuario = getUsuarioByToken(token);
+		tarefaService.deletaTarefa(usuario, idTarefa);
+		log.info("[finaliza] TarefaRestController - DeletaTarefa");
+		
+	}
+
 }
+

@@ -48,6 +48,8 @@ public class TarefaApplicationService implements TarefaService {
         Tarefa tarefa = detalhaTarefa(usuario, idTarefa);
         tarefa.editaDescricao(tarefaRequestEditada);
         tarefaRepository.salva(tarefa);
+        Tarefa tarefaAlterada =
+                tarefaRepository.buscaTarefaPorId(idTarefa).orElseThrow(() -> APIException.build(HttpStatus.NOT_FOUND, "Tarefa não encontrada!"));
         log.info("[finaliza] TarefaApplicationService - alteraTarefa");
 
     }

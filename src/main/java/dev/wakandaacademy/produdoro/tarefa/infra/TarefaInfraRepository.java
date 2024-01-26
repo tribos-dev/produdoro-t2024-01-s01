@@ -1,16 +1,19 @@
 package dev.wakandaacademy.produdoro.tarefa.infra;
 
-import dev.wakandaacademy.produdoro.handler.APIException;
-import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
-import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-import java.util.UUID;
+import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
+import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
+import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Repository
 @Log4j2
@@ -36,5 +39,29 @@ public class TarefaInfraRepository implements TarefaRepository {
         Optional<Tarefa> tarefaPorId = tarefaSpringMongoDBRepository.findByIdTarefa(idTarefa);
         log.info("[finaliza] TarefaInfraRepository - buscaTarefaPorId");
         return tarefaPorId;
+    }
+    
+    @Override
+    public List<Tarefa> buscaTarefasPorUsuario(UUID idUsuario) {
+		log.info("[inicia] TarefaInfraRepository - buscaTodasTarefas");
+		List<Tarefa> todasTarefas = tarefaSpringMongoDBRepository.findAllByIdUsuario(idUsuario);
+		log.info("[finaliza] TarefaInfraRepository - buscaTodasTarefas");
+		return todasTarefas;
+	}
+    
+	@Override
+	public void deletaTarefaPorId(Tarefa tarefa) {
+		log.info("[inicia] TarefaInfraRepository - deletaTarefaPorId");
+		tarefaSpringMongoDBRepository.delete(tarefa);
+		log.info("[finaliza] TarefaInfraRepository - deletaTarefaPorId");
+		
+	}
+
+    @Override
+    public Tarefa buscarTarefaAtiva() {
+        log.info("[inicia] TarefaInfraRepository - buscarTarefaAtiva");
+        Tarefa tarefa = tarefaSpringMongoDBRepository.findByStatusAtivacao(StatusAtivacaoTarefa.ATIVA);
+        log.info("[finaliza] TarefaInfraRepository - buscarTarefaAtiva");
+        return tarefa;
     }
 }

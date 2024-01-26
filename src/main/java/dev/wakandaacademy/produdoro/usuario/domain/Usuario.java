@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.http.HttpStatus;
 
 import dev.wakandaacademy.produdoro.pomodoro.domain.ConfiguracaoPadrao;
 import dev.wakandaacademy.produdoro.usuario.application.api.UsuarioNovoRequest;
@@ -56,5 +57,30 @@ public class Usuario {
 
 	public void mudaStatusPausaCurta() {
 		this.status = StatusUsuario.PAUSA_CURTA;
+
+	public void validaUsuario(UUID idUsuario2) {
+		if(!this.idUsuario.equals(idUsuario2)) {
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não é valida!");
+		}
+	}
+
+	public void atualizarStatus(UUID idUsuario) {
+		verificarUsuario(idUsuario);
+		validarStatusFoco();
+	}
+	private void verificarUsuario(UUID idUsuario) {
+		if (!this.idUsuario.equals(idUsuario)){
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não e valida");
+		}
+	}
+
+	private void validarStatusFoco() {
+		if (this.status.equals(StatusUsuario.FOCO)){
+			throw APIException.build(HttpStatus.CONFLICT, "Status do usuario já esta em Foco");
+		}
+		mudarStatusParaFoco();
+	}
+	private void mudarStatusParaFoco() {
+		this.status = StatusUsuario.FOCO;
 	}
 }

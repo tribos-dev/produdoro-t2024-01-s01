@@ -35,6 +35,8 @@ class TarefaApplicationServiceTest {
     //	@MockBean
     @Mock
     TarefaRepository tarefaRepository;
+
+    @Mock
     UsuarioRepository usuarioRepository;
 
     @Test
@@ -55,17 +57,17 @@ class TarefaApplicationServiceTest {
     }
     @Test
     void editaTarefa(){
-        Usuario usuarioMock = DataHelper.createUsuario();
-        Tarefa tarefaMock = DataHelper.createTarefa();
+        Usuario usuario = DataHelper.createUsuario();
+        Tarefa tarefa = DataHelper.createTarefa();
         EditaTarefaRequest tarefaReq = DataHelper.getEditaTarefaRequest();
 
-        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuarioMock);
-        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefaMock));
-        tarefaApplicationService.alteraTarefa(usuarioMock.getEmail(), tarefaMock.getIdTarefa(), tarefaReq);
+        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
+        tarefaApplicationService.alteraTarefa(usuario.getEmail(), tarefa.getIdTarefa(), tarefaReq);
 
-        verify (usuarioRepository, times(1)).buscaUsuarioPorEmail(usuarioMock.getEmail());
-        verify (tarefaRepository, times(1)).buscaTarefaPorId(tarefaMock.getIdTarefa());
-        assertEquals(tarefaReq.getDescricao(), tarefaMock.getDescricao());
+        verify (usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
+        verify (tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
+        assertEquals(tarefaReq.getDescricao(), tarefa.getDescricao());
     }
 
     void naoEditaTarefa(){

@@ -1,6 +1,5 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,10 +18,6 @@ import java.util.UUID;
 
 import dev.wakandaacademy.produdoro.DataHelper;
 import dev.wakandaacademy.produdoro.handler.APIException;
-import dev.wakandaacademy.produdoro.tarefa.domain.StatusTarefa;
-import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
-import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
-import org.junit.jupiter.api.DisplayName;
 import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
 import dev.wakandaacademy.produdoro.usuario.application.repository.UsuarioRepository;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
@@ -38,7 +33,6 @@ import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
-import org.springframework.http.HttpStatus;
 
 @ExtendWith(MockitoExtension.class)
 class TarefaApplicationServiceTest {
@@ -51,10 +45,7 @@ class TarefaApplicationServiceTest {
     @Mock
     TarefaRepository tarefaRepository;
     @Mock
-    private UsuarioRepository usuarioRepository;
-
     UsuarioRepository usuarioRepository;
-
 
     @Test
     void deveRetornarIdTarefaNovaCriada() {
@@ -113,27 +104,7 @@ class TarefaApplicationServiceTest {
         TarefaRequest request = new TarefaRequest("tarefa 1", UUID.randomUUID(), null, null, 0);
         return request;
     }
-  
-    @Test
-    @DisplayName("Teste Conclui Tarefa")
-    public void deveConcluirTarefa (){
-        Usuario usuario = DataHelper.createUsuario();
-        Tarefa tarefa = DataHelper.createTarefa();
-        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
-        when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
-        tarefaApplicationService.concluiTarefa(usuario.getEmail(), tarefa.getIdTarefa());
-        assertEquals(tarefa.getStatus(), StatusTarefa.CONCLUIDA);
-    }
-    @Test
-    @DisplayName("Teste Não Conclui Tarefa")
-    public void naoConcluiTarefa (){
-        Usuario usuario = DataHelper.createUsuario();
-        Tarefa tarefa = DataHelper.createTarefa();
-        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenThrow(APIException.class);
-        assertThrows(APIException.class,
-                () -> tarefaApplicationService.concluiTarefa("emailInvalido@gmail.com", tarefa.getIdTarefa()));
-
-      
+    
     @Test
     public void testBuscaTodasTarefasPorUsuario() {
     	 Usuario usuario = DataHelper.createUsuario();

@@ -6,8 +6,6 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
-
-import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,11 +33,6 @@ public interface TarefaAPI {
 	@ResponseStatus(code = HttpStatus.OK)
     List<TarefaListResponse> buscaTarefasPorUsuario(@RequestHeader(name = "Authorization",required = true) String token, 
     		@PathVariable UUID idUsuario);
-
-    @PatchMapping("/concluiTarefa/{idTarefa}")
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    void concluiTarefa(@RequestHeader(name = "Authorization", required = true) String token,
-                       @PathVariable UUID idTarefa);
 
     @DeleteMapping("/deleta-tarefa/{idTarefa}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)

@@ -37,13 +37,6 @@ public class TarefaRestController implements TarefaAPI {
 	}
 
 	@Override
-	public void concluiTarefa(String token, UUID idTarefa) {
-		log.info("[inicia] TarefaRestController - concluiTarefa");
-		String usuario = getUsuarioByToken(token);
-		tarefaService.concluiTarefa(usuario, idTarefa);
-		log.info("[finaliza] TarefaRestController - concluiTarefa");
-
-  @Override
 	public void definirTarefaComoAtiva(String token, UUID idTarefa) {
 		log.info("[inicia] TarefaRestController - definirTarefaComoAtiva");
 		String usuario = getUsuarioByToken(token);

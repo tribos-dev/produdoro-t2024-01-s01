@@ -1,5 +1,8 @@
 package dev.wakandaacademy.produdoro.usuario.application.api;
 
+import dev.wakandaacademy.produdoro.config.security.service.TokenService;
+import dev.wakandaacademy.produdoro.handler.APIException;
+
 import javax.validation.Valid;
 
 import dev.wakandaacademy.produdoro.config.security.service.TokenService;
@@ -11,7 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.wakandaacademy.produdoro.usuario.application.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
@@ -29,6 +36,7 @@ public class UsuarioController implements UsuarioAPI {
 		log.info("[finaliza] UsuarioController - postNovoUsuario");
 		return usuarioCriado;
 	}
+
 	@Override
 	public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
 		log.info("[inicia] UsuarioController - buscaUsuarioPorId");
@@ -36,6 +44,16 @@ public class UsuarioController implements UsuarioAPI {
 		UsuarioCriadoResponse buscaUsuario = usuarioAppplicationService.buscaUsuarioPorId(idUsuario);
 		log.info("[finaliza] UsuarioController - buscaUsuarioPorId");
 		return buscaUsuario;
+	}
+
+	@Override
+	public void mudaStatusPausaCurta(String token, UUID idUsuario) {
+		log.info("[inicia] UsuariaoController - mudaStatusPausaCurta");
+		log.info("[idUsuario] {}", idUsuario);
+		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(
+				() -> APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não e válida"));
+		usuarioAppplicationService.mudaStatusPausaCurta(usuario, idUsuario);
+		log.info("[finaliza] UsuariaoController - mudaStatusPausaCurta");
 	}
 
 	@Override
@@ -49,7 +67,8 @@ public class UsuarioController implements UsuarioAPI {
 
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
-		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
+		String usuario = tokenService.getUsuarioByBearerToken(token)
+				.orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
 		log.info("[usuario] {}", usuario);
 		return usuario;
 	}

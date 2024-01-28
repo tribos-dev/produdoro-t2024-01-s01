@@ -20,13 +20,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
-@Log4j2
+
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @ToString
 @Document(collection = "Usuario")
+@Log4j2
 public class Usuario {
 	@Id
 	private UUID idUsuario;
@@ -49,7 +50,7 @@ public class Usuario {
 	public void validaUsuario(UUID idUsuario) {
 		log.info("[inicia] Usuario - validaUsuario");
 		if (!this.idUsuario.equals(idUsuario)) {
-			throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não e valida!");
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticacao não e Valida");
 		}
 		log.info("[finaliza] Usuario - validaUsuario");
 	}
@@ -58,5 +59,29 @@ public class Usuario {
 		log.info("[inicia] Usuario - mudaStatusPausaLonga");
 		this.status = StatusUsuario.PAUSA_LONGA;
 		log.info("[finaliza] Usuario - mudaStatusPausaLonga");
+	}
+	
+		public void mudaStatusPausaCurta() {
+		this.status = StatusUsuario.PAUSA_CURTA;
+	}
+
+	public void atualizarStatus(UUID idUsuario) {
+		verificarUsuario(idUsuario);
+		validarStatusFoco();
+	}
+	private void verificarUsuario(UUID idUsuario) {
+		if (!this.idUsuario.equals(idUsuario)){
+			throw APIException.build(HttpStatus.UNAUTHORIZED, "credencial de autenticação não e valida");
+		}
+	}
+
+	private void validarStatusFoco() {
+		if (this.status.equals(StatusUsuario.FOCO)){
+			throw APIException.build(HttpStatus.CONFLICT, "Status do usuario já esta em Foco");
+		}
+		mudarStatusParaFoco();
+	}
+	private void mudarStatusParaFoco() {
+		this.status = StatusUsuario.FOCO;
 	}
 }

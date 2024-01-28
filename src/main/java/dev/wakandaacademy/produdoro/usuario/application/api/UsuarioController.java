@@ -36,6 +36,7 @@ public class UsuarioController implements UsuarioAPI {
 		log.info("[finaliza] UsuarioController - postNovoUsuario");
 		return usuarioCriado;
 	}
+
 	@Override
 	public UsuarioCriadoResponse buscaUsuarioPorId(UUID idUsuario) {
 		log.info("[inicia] UsuarioController - buscaUsuarioPorId");
@@ -49,12 +50,13 @@ public class UsuarioController implements UsuarioAPI {
 	public void mudaStatusPausaCurta(String token, UUID idUsuario) {
 		log.info("[inicia] UsuariaoController - mudaStatusPausaCurta");
 		log.info("[idUsuario] {}", idUsuario);
-		String usuario = tokenService.getUsuarioByBearerToken(token)
-				.orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não e válida"));
+		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(
+				() -> APIException.build(HttpStatus.UNAUTHORIZED, "Credencial de autenticação não e válida"));
 		usuarioAppplicationService.mudaStatusPausaCurta(usuario, idUsuario);
 		log.info("[finaliza] UsuariaoController - mudaStatusPausaCurta");
-    
-  @Override
+	}
+
+	@Override
 	public void alteraStatusParaFoco(String token, UUID idUsuario) {
 		log.info("[inicia] UsuarioController - alteraStatusParFoco");
 		log.info("[idUsuario] {}", idUsuario);
@@ -65,7 +67,8 @@ public class UsuarioController implements UsuarioAPI {
 
 	private String getUsuarioByToken(String token) {
 		log.debug("[token] {}", token);
-		String usuario = tokenService.getUsuarioByBearerToken(token).orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
+		String usuario = tokenService.getUsuarioByBearerToken(token)
+				.orElseThrow(() -> APIException.build(HttpStatus.UNAUTHORIZED, token));
 		log.info("[usuario] {}", usuario);
 		return usuario;
 	}

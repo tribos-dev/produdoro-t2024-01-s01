@@ -3,6 +3,8 @@ package dev.wakandaacademy.produdoro;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
+
 import dev.wakandaacademy.produdoro.pomodoro.domain.ConfiguracaoPadrao;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.domain.StatusAtivacaoTarefa;
@@ -53,4 +55,10 @@ public class DataHelper {
 
         );
     }
+
+	public static Usuario createUsuarioDiferente() {
+		return Usuario.builder()
+				.email("email@email.com")
+				.idUsuario(UUID.randomUUID()).build();
+	}
 }

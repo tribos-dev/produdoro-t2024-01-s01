@@ -1,17 +1,25 @@
 package dev.wakandaacademy.produdoro.tarefa.application.service;
 
+import java.util.List;
+import java.util.UUID;
+
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.domain.Tarefa;
 
-import java.util.List;
-import java.util.UUID;
 public interface TarefaService {
-    TarefaIdResponse criaNovaTarefa(TarefaRequest tarefaRequest);
-    Tarefa detalhaTarefa(String usuario, UUID idTarefa);
-    void concluiTarefa(String usuario, UUID idTarefa);
-    List<TarefaListResponse> buscaTarefasPorUsuario(String usuario, UUID idUsuario);
+	TarefaIdResponse criaNovaTarefa(TarefaRequest tarefaRequest);
+
+	Tarefa detalhaTarefa(String usuario, UUID idTarefa);
+
+	void incrementaPomodoro(UUID idTarefa, String usuarioEmail);
+
+	void concluiTarefa(String usuario, UUID idTarefa);
+
+	List<TarefaListResponse> buscaTarefasPorUsuario(String usuario, UUID idUsuario);
+
 	void deletaTarefa(String usuario, UUID idTarefa);
-    void definirTarefaComoAtiva(String usuario, UUID idTarefa);
+
+	void definirTarefaComoAtiva(String usuario, UUID idTarefa);
 }

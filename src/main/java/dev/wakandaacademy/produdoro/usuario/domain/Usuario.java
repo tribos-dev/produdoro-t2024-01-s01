@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
+
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -54,7 +55,13 @@ public class Usuario {
 		log.info("[finaliza] Usuario - validaUsuario");
 	}
 
-	public void mudaStatusPausaCurta() {
+	public void mudaStatusPausaLonga() {
+		log.info("[inicia] Usuario - mudaStatusPausaLonga");
+		this.status = StatusUsuario.PAUSA_LONGA;
+		log.info("[finaliza] Usuario - mudaStatusPausaLonga");
+	}
+	
+		public void mudaStatusPausaCurta() {
 		this.status = StatusUsuario.PAUSA_CURTA;
 	}
 

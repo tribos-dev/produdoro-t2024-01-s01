@@ -10,6 +10,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import org.springframework.http.HttpStatus;
 
 import dev.wakandaacademy.produdoro.DataHelper;
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaIdResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaListResponse;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
@@ -58,6 +60,40 @@ class TarefaApplicationServiceTest {
 		assertNotNull(response);
 		assertEquals(TarefaIdResponse.class, response.getClass());
 		assertEquals(UUID.class, response.getIdTarefa().getClass());
+	}
+
+	public TarefaRequest getTarefaRequest() {
+		TarefaRequest request = new TarefaRequest("tarefa 1", UUID.randomUUID(), null, null, 0);
+		return request;
+	}
+
+	@Test
+	void editaTarefa() {
+		Usuario usuario = DataHelper.createUsuario();
+		Tarefa tarefa = DataHelper.createTarefa();
+		EditaTarefaRequest tarefaReq = DataHelper.getEditaTarefaRequest();
+
+		when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+		when(tarefaRepository.buscaTarefaPorId(any())).thenReturn(Optional.of(tarefa));
+		tarefaApplicationService.alteraTarefa(usuario.getEmail(), tarefa.getIdTarefa(), tarefaReq);
+
+		verify(usuarioRepository, times(1)).buscaUsuarioPorEmail(usuario.getEmail());
+		verify(tarefaRepository, times(1)).buscaTarefaPorId(tarefa.getIdTarefa());
+		assertEquals(tarefaReq.getDescricao(), tarefa.getDescricao());
+	}
+
+	void naoEditaTarefa() {
+		UUID idTarefaInvalido = UUID.randomUUID();
+		String usuario = "usuarioTeste";
+		EditaTarefaRequest editaTarefaRequest = new EditaTarefaRequest("TESTE");
+
+		when(tarefaRepository.buscaTarefaPorId(idTarefaInvalido)).thenReturn(Optional.empty());
+		assertThrows(APIException.class,
+				() -> tarefaApplicationService.alteraTarefa(usuario, idTarefaInvalido, editaTarefaRequest));
+
+		verify(tarefaRepository, times(1)).buscaTarefaPorId(idTarefaInvalido);
+		verifyNoMoreInteractions(tarefaRepository);
+
 	}
 
 	@Test
@@ -100,11 +136,6 @@ class TarefaApplicationServiceTest {
 		return Tarefa.builder().contagemPomodoro(1).idTarefa(UUID.fromString("4c70c27a-446c-4506-b666-1067085d8d85"))
 				.idUsuario(usuario.getIdUsuario()).descricao("descricao tarefa")
 				.statusAtivacao(StatusAtivacaoTarefa.ATIVA).build();
-	}
-
-	public TarefaRequest getTarefaRequest() {
-		TarefaRequest request = new TarefaRequest("tarefa 1", UUID.randomUUID(), null, null, 0);
-		return request;
 	}
 
 	@Test

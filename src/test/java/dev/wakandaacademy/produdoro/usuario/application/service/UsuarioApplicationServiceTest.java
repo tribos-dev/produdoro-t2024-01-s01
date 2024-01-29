@@ -27,13 +27,13 @@ import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioApplicationServiceTest {
-	
+
 	@InjectMocks
 	UsuarioApplicationService usuarioApplicationService;
-	
+
 	@Mock
 	UsuarioRepository usuarioRepository;
-	
+
 	@Test
 	void UsuarioMudaStatusPausaLongaSucesso() {
 		Usuario usuario = DataHelper.createUsuario();
@@ -42,7 +42,7 @@ class UsuarioApplicationServiceTest {
 		usuarioApplicationService.mudaStatusPausaLonga(usuario.getEmail(), usuario.getIdUsuario());
 		verify(usuarioRepository, times(1)).salva(any());
 	}
-	
+
 	@Test
 	void UsuarioMudaStatusPausaLongaFalha() {
 		Usuario usuario = DataHelper.createUsuario();
@@ -52,46 +52,47 @@ class UsuarioApplicationServiceTest {
 				() -> usuarioApplicationService.mudaStatusPausaLonga(usuario.getEmail(), UUID.randomUUID()));
 		assertEquals(APIException.class, ex.getClass());
 		assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusException());
-		assertEquals("Credencial de autenticacao não e Valida",ex.getMessage());
+		assertEquals("Credencial de autenticacao não e Valida", ex.getMessage());
 	}
-				
-    @Test
-    @DisplayName("Teste unitário pausa Curta")
-    public void mudaStatusParaPausaCurta() {
-        Usuario usuario = DataHelper.createUsuario();
-        when(usuarioRepository.salva(any())).thenReturn(usuario);
-        when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
-        usuarioApplicationService.mudaStatusPausaCurta(usuario.getEmail(), usuario.getIdUsuario());
-        verify(usuarioRepository, times(1)).salva(any());
-        assertEquals(StatusUsuario.PAUSA_CURTA, usuario.getStatus());
-    }
-    
-    @Test
-    void deveAlterarStatusParaFoco_QuandoStatusForDiferenteDeFoco(){
-        // dado
-        Usuario usuario = DataHelper.createUsuario();
-        UUID idUsuario = UUID.fromString("a713162f-20a9-4db9-a85b-90cd51ab18f4");
 
-        // quando
-        when(usuarioRepository.buscaUsuarioPorEmail(anyString())).thenReturn(usuario);
-        usuarioApplicationService.alteraStatusParaFoco(String.valueOf(usuario), idUsuario);
+	@Test
+	@DisplayName("Teste unitário pausa Curta")
+	public void mudaStatusParaPausaCurta() {
+		Usuario usuario = DataHelper.createUsuario();
+		when(usuarioRepository.salva(any())).thenReturn(usuario);
+		when(usuarioRepository.buscaUsuarioPorEmail(any())).thenReturn(usuario);
+		usuarioApplicationService.mudaStatusPausaCurta(usuario.getEmail(), usuario.getIdUsuario());
+		verify(usuarioRepository, times(1)).salva(any());
+		assertEquals(StatusUsuario.PAUSA_CURTA, usuario.getStatus());
+	}
 
-        // entao
-        verify(usuarioRepository, times(1)).salva(usuario);
-    }
+	@Test
+	void deveAlterarStatusParaFoco_QuandoStatusForDiferenteDeFoco() {
+		// dado
+		Usuario usuario = DataHelper.createUsuario();
+		UUID idUsuario = UUID.fromString("a713162f-20a9-4db9-a85b-90cd51ab18f4");
 
-    @Test
-    void naoDeveAlterarStatusParaFoco_QuandoStatusForIgualAFoco(){
-        UUID idUsuario = UUID.fromString("a713162f-20a9-4db9-a85b-90cd51ab18f4");
-        Usuario usuario = Usuario.builder().email("email@email.com").status(StatusUsuario.FOCO).idUsuario(idUsuario).build();
+		// quando
+		when(usuarioRepository.buscaUsuarioPorEmail(anyString())).thenReturn(usuario);
+		usuarioApplicationService.alteraStatusParaFoco(String.valueOf(usuario), idUsuario);
 
-        when(usuarioRepository.buscaUsuarioPorEmail(anyString())).thenReturn(usuario);
+		// entao
+		verify(usuarioRepository, times(1)).salva(usuario);
+	}
 
-        APIException exception = assertThrows(APIException.class, () -> {
-            usuarioApplicationService.alteraStatusParaFoco(String.valueOf(usuario), idUsuario);
-        });
+	@Test
+	void naoDeveAlterarStatusParaFoco_QuandoStatusForIgualAFoco() {
+		UUID idUsuario = UUID.fromString("a713162f-20a9-4db9-a85b-90cd51ab18f4");
+		Usuario usuario = Usuario.builder().email("email@email.com").status(StatusUsuario.FOCO).idUsuario(idUsuario)
+				.build();
 
-        assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
-        verify(usuarioRepository, never()).salva(any(Usuario.class));
-    }
+		when(usuarioRepository.buscaUsuarioPorEmail(anyString())).thenReturn(usuario);
+
+		APIException exception = assertThrows(APIException.class, () -> {
+			usuarioApplicationService.alteraStatusParaFoco(String.valueOf(usuario), idUsuario);
+		});
+
+		assertEquals(HttpStatus.CONFLICT, exception.getStatusException());
+		verify(usuarioRepository, never()).salva(any(Usuario.class));
+	}
 }

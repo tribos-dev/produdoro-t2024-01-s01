@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 
 import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
 import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
 import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
@@ -54,6 +55,10 @@ public class Tarefa {
 		if (!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário não é dono da Tarefa solicitada!");
 		}
+	}
+
+	public void editaDescricao(EditaTarefaRequest tarefaRequestEditada) {
+		this.descricao = tarefaRequestEditada.getDescricao();
 	}
 
 	public void incrementaContagemPomodoro() {

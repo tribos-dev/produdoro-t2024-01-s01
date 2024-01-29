@@ -2,23 +2,23 @@ package dev.wakandaacademy.produdoro.tarefa.domain;
 
 import java.util.UUID;
 
-import dev.wakandaacademy.produdoro.handler.APIException;
-import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
-import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
-import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 
+import dev.wakandaacademy.produdoro.handler.APIException;
+import dev.wakandaacademy.produdoro.tarefa.application.api.EditaTarefaRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.api.TarefaRequest;
+import dev.wakandaacademy.produdoro.tarefa.application.repository.TarefaRepository;
+import dev.wakandaacademy.produdoro.usuario.domain.Usuario;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -52,12 +52,38 @@ public class Tarefa {
 	}
 
 	public void pertenceAoUsuario(Usuario usuarioPorEmail) {
-		if(!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
+		if (!this.idUsuario.equals(usuarioPorEmail.getIdUsuario())) {
 			throw APIException.build(HttpStatus.UNAUTHORIZED, "Usuário não é dono da Tarefa solicitada!");
 		}
 	}
 
 	public void editaDescricao(EditaTarefaRequest tarefaRequestEditada) {
 		this.descricao = tarefaRequestEditada.getDescricao();
+	}
+
+	public void incrementaContagemPomodoro() {
+		this.contagemPomodoro += 1;
+	}
+
+	public void concluiTarefa() {
+		this.status = StatusTarefa.CONCLUIDA;
+	}
+
+	public void definirComoAtiva() {
+		if (this.statusAtivacao.equals(StatusAtivacaoTarefa.INATIVA)) {
+			this.statusAtivacao = StatusAtivacaoTarefa.ATIVA;
+		}
+	}
+
+	public void inativarOutraTarefa(TarefaRepository tarefaRepository) {
+		Tarefa tarefaAtiva = tarefaRepository.buscarTarefaAtiva();
+		tarefaAtiva.definirComoInativa();
+		tarefaRepository.salva(tarefaAtiva);
+	}
+
+	private void definirComoInativa() {
+		if (this.statusAtivacao.equals(StatusAtivacaoTarefa.ATIVA)) {
+			this.statusAtivacao = StatusAtivacaoTarefa.INATIVA;
+		}
 	}
 }
